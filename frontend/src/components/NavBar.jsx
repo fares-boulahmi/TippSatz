@@ -10,6 +10,25 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
+  // above the component (or inside it)
+  const closeDropdown = () => document.activeElement?.blur();
+
+  // inside Navbar, before the return:
+  const navLinks = [
+    ...(user?.role === "admin"
+      ? [
+          {
+            to: "/collections/new",
+            icon: "add_circle",
+            label: "New collection",
+          },
+        ]
+      : []),
+    { to: "/landing", icon: "info", label: "About" },
+    { to: "/practice", icon: "keyboard", label: "Practice Typing" },
+    { to: "/", icon: "trending_up", label: "Progress" },
+  ];
+
   return (
     <header className="fixed top-0 inset-x-0 z-40 bg-base-100/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(58,48,42,0.05)]">
       <div className="h-16 max-w-6xl mx-auto px-6 lg:px-10 flex items-center justify-between gap-4">
@@ -23,8 +42,8 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          {user && (
+        <div className="flex items-center gap-2 ">
+          {/* {user && (
             <div>
               {user.role === "admin" && (
                 <Link to="/collections/new" className="btn btn-ghost btn-sm">
@@ -45,6 +64,44 @@ export default function Navbar() {
                 <span className="hidden sm:inline">Progress</span>
               </Link>
             </div>
+          )} */}
+          {user && (
+            <>
+              {/* Desktop: inline links */}
+              <div className="hidden sm:flex items-center gap-1">
+                {navLinks.map((l) => (
+                  <Link key={l.to} to={l.to} className="btn btn-ghost btn-sm">
+                    <Icon name={l.icon} className="text-primary" />
+                    <span>{l.label}</span>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Mobile: hamburger dropdown */}
+              <div className="dropdown dropdown-end sm:hidden">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-sm btn-square"
+                  aria-label="Open menu"
+                >
+                  <Icon name="menu" className="text-primary" />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu bg-white rounded-box shadow-lg w-56 p-2 mt-3 z-50"
+                >
+                  {navLinks.map((l) => (
+                    <li key={l.to}>
+                      <Link to={l.to} onClick={closeDropdown}>
+                        <Icon name={l.icon} className="text-primary" />
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
           )}
           {user ? (
             <div className="dropdown dropdown-end">

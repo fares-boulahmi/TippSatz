@@ -99,28 +99,27 @@ export default function HomePage() {
         </h2>
         <ActivityGraph activity={activity} />
       </section>
-      {user.role === "admin" && (
-        <section className="space-y-5">
-          <h2 className="font-headline text-3xl">Collections</h2>
-          {collections.length === 0 ? (
-            <div className="bg-base-200 rounded-xl p-10 text-center space-y-4">
-              <p className="text-base-content/70">
-                No collections yet. Create the first one and add a set of words
-                and sentences.
-              </p>
-              <Link to="/collections/new" className="btn btn-primary btn-sm">
-                Create collection
-              </Link>
-            </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {collections.map((c) => (
-                <CollectionCard key={c._id} collection={c} />
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+
+      <section className="space-y-5">
+        <h2 className="font-headline text-3xl">Collections</h2>
+        {collections.length === 0 ? (
+          <div className="bg-base-200 rounded-xl p-10 text-center space-y-4">
+            <p className="text-base-content/70">
+              No collections yet. Create the first one and add a set of words
+              and sentences.
+            </p>
+            <Link to="/collections/new" className="btn btn-primary btn-sm">
+              Create collection
+            </Link>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {collections.map((c) => (
+              <CollectionCard key={c._id} collection={c} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

@@ -53,6 +53,8 @@ export async function createCollection(req, res) {
 export async function getCollection(req, res) {
   const collection = await Collection.findById(req.params.id).lean();
   if (!collection) throw new HttpError(404, "Collection not found");
+  if (req.user.role !== "admin")
+    throw new HttpError(401, "Only Admin has access to this features");
 
   const [sets, progress] = await Promise.all([
     TypingSet.find({ collectionId: collection._id })

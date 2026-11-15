@@ -11,8 +11,11 @@ const router = Router();
 router.use(requireAuth);
 
 router.get("/", listCollections);
-router.post("/", requireAdmin, createCollection);
+
+router.use(requireAdmin);
+
+router.post("/", createCollection);
 router.get("/:id", getCollection);
-router.post("/:id/sets", requireAdmin, createSet);
+router.post("/:id/sets", createSet);
 
 export default router;

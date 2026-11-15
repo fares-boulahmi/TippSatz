@@ -1,6 +1,8 @@
 import { Link } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 export default function CollectionCard({ collection: c }) {
+  const { user } = useAuth();
   const p = c.progress;
   const status = !c.setsCount
     ? "No sets yet"
@@ -47,9 +49,11 @@ export default function CollectionCard({ collection: c }) {
         >
           {p ? "Continue" : "Start"}
         </Link>
-        <Link to={`/collections/${c._id}`} className="btn btn-ghost btn-sm">
-          Open
-        </Link>
+        {user.role === "admin" && (
+          <Link to={`/collections/${c._id}`} className="btn btn-ghost btn-sm">
+            Open
+          </Link>
+        )}
       </div>
     </article>
   );

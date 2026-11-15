@@ -279,7 +279,7 @@ export default function LandingPage() {
 
       {/* progress */}
       <Section id="progress" alt>
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 items-center ">
           <div>
             <h2 className="font-headline text-4xl lg:text-5xl tracking-tight mb-3">
               Show up, see it fill in.
@@ -290,7 +290,7 @@ export default function LandingPage() {
               the dashboard.
             </p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6 max-w-[80vw]">
             <ActivityGraph activity={activity} />
             <p className="text-[11px] text-base-content/50 mt-3">Sample data</p>
           </div>

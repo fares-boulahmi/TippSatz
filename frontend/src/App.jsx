@@ -1,6 +1,7 @@
 import { Navigate, Outlet, Route, Routes } from "react-router";
 import Navbar from "./components/NavBar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProtectedRouteAdmin from "./components/ProtectedRouteAdmin.jsx";
 import CollectionPage from "./pages/CollectionPage.jsx";
 import CreateCollectionPage from "./pages/CreateCollectionPage.jsx";
 import CreateSetPage from "./pages/CreateSetPage.jsx";
@@ -33,9 +34,30 @@ export default function App() {
         }
       >
         <Route index element={<HomePage />} />
-        <Route path="collections/new" element={<CreateCollectionPage />} />
-        <Route path="collections/:id" element={<CollectionPage />} />
-        <Route path="collections/:id/sets/new" element={<CreateSetPage />} />
+        <Route
+          path="collections/new"
+          element={
+            <ProtectedRouteAdmin>
+              <CreateCollectionPage />
+            </ProtectedRouteAdmin>
+          }
+        />
+        <Route
+          path="collections/:id"
+          element={
+            <ProtectedRouteAdmin>
+              <CollectionPage />
+            </ProtectedRouteAdmin>
+          }
+        />
+        <Route
+          path="collections/:id/sets/new"
+          element={
+            <ProtectedRouteAdmin>
+              <CreateSetPage />
+            </ProtectedRouteAdmin>
+          }
+        />
         <Route path="practice/:id" element={<PracticePage />} />
         <Route path="practice" element={<PracticePage />} />
         <Route path="landing" element={<LandingPage />} />
