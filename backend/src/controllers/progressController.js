@@ -96,3 +96,17 @@ export async function getActivity(req, res) {
     .lean();
   res.json({ activity });
 }
+
+// GET /api/progress/lastActivity -> the collection the user touched most recently
+export async function getLastActivity(req, res) {
+  const progress = await Progress.findOne({ user: req.user._id })
+    .select("collectionId -_id")
+    .sort({ updatedAt: -1 })
+    .lean();
+  // if (!progress) throw new HttpError(404, "No activity yet");
+  // for now will be hard coded to the first set of the 4075 set
+  if (!progress) {
+    res.json({ collection: "6afdc4d0a473225e817b25bd" });
+  }
+  res.json({ collection: progress.collectionId });
+}

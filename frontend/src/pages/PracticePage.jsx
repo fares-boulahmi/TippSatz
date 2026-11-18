@@ -10,7 +10,7 @@ import { localISO } from "../utils/dates.js";
 import { toTokens } from "../utils/text.js";
 
 export default function PracticePage() {
-  const id = useParams().id || "6af6336bd2d9459b774ffabb";
+  const [collectionId, setCollectionId] = useState(null);
   const [session, setSession] = useState(null); // what the server says I should type now
   const [error, setError] = useState("");
   const [result, setResult] = useState(null); // stats of the session I just finished
@@ -18,12 +18,27 @@ export default function PracticePage() {
   const [saveError, setSaveError] = useState("");
   const payload = useRef(null);
   const { user } = useAuth();
+  const id = useParams().id || null;
+  // if (id !== null) {
+  //   setCollectionId(id);
+  // }
 
   useEffect(() => {
-    api
-      .get(`/progress/${id}/session`)
-      .then((r) => setSession(r.data))
-      .catch((e) => setError(errMsg(e)));
+    if (id !== null) {
+      setCollectionId(id);
+      api
+        .get(`/progress/${id}/session`)
+        .then((r) => setSession(r.data))
+        .catch((e) => setError(errMsg(e)));
+    } else {
+      api.get(`/progress/lastActivity`).then((r) => {
+        setCollectionId(r.data.collection);
+        api
+          .get(`/progress/${r.data.collection}/session`)
+          .then((r) => setSession(r.data))
+          .catch((e) => setError(errMsg(e)));
+      });
+    }
   }, [id]);
 
   const tokens = useMemo(
@@ -37,7 +52,7 @@ export default function PracticePage() {
     setSaveError("");
     try {
       const { data } = await api.post(
-        `/progress/${id}/complete`,
+        `/progress/${collectionId}/complete`,
         payload.current,
       );
       setNext(data);
@@ -46,7 +61,7 @@ export default function PracticePage() {
         setNext(e.response.data.session); // out of sync -> resync
       else setSaveError(errMsg(e));
     }
-  }, [id]);
+  }, [collectionId]);
 
   const onFinish = useCallback(
     (stats) => {
@@ -78,7 +93,7 @@ export default function PracticePage() {
         <div role="alert" className="alert alert-error">
           {error}
         </div>
-        <Link to={`/collections/${id}`} className="btn btn-sm">
+        <Link to={`/collections/${collectionId}`} className="btn btn-sm">
           Back to collection
         </Link>
       </div>
@@ -100,7 +115,7 @@ export default function PracticePage() {
           the last one.
         </p>
         <div className="flex gap-3">
-          <Link to={`/collections/${id}`} className="btn">
+          <Link to={`/collections/${collectionId}`} className="btn">
             View sets
           </Link>
           <Link to="/" className="btn btn-primary">
@@ -120,7 +135,7 @@ export default function PracticePage() {
         {user.role === "admin" && (
           <div>
             <Link
-              to={`/collections/${id}`}
+              to={`/collections/${collectionId}`}
               className="text-xs font-semibold text-primary hover:underline"
             >
               ← {collection.title}

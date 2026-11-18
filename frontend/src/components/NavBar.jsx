@@ -43,28 +43,6 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-2 ">
-          {/* {user && (
-            <div>
-              {user.role === "admin" && (
-                <Link to="/collections/new" className="btn btn-ghost btn-sm">
-                  <Icon name="add_circle" className="text-primary" />
-                  <span className="hidden sm:inline">New collection</span>
-                </Link>
-              )}
-              <Link to="/landing" className="btn btn-ghost btn-sm">
-                <Icon name="info" className="text-primary" />
-                <span className="hidden sm:inline">About</span>
-              </Link>
-              <Link to="/practice" className="btn btn-ghost btn-sm">
-                <Icon name="keyboard" className="text-primary" />
-                <span className="hidden sm:inline">Practice Typing</span>
-              </Link>
-              <Link to="/" className="btn btn-ghost btn-sm">
-                <Icon name="trending_up" className="text-primary" />
-                <span className="hidden sm:inline">Progress</span>
-              </Link>
-            </div>
-          )} */}
           {user && (
             <>
               {/* Desktop: inline links */}
