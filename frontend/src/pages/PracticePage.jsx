@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { Link, useParams } from "react-router";
 import api, { errMsg } from "../api/client.js";
 import Icon from "../components/Icon.jsx";
@@ -16,6 +17,7 @@ export default function PracticePage() {
   const [result, setResult] = useState(null); // stats of the session I just finished
   const [next, setNext] = useState(null); // the following session (arrives after saving)
   const [saveError, setSaveError] = useState("");
+  const [showTyped, setShowTyped] = useState(false); // hidden by default
   const payload = useRef(null);
   const { user } = useAuth();
   const id = useParams().id || null;
@@ -75,6 +77,7 @@ export default function PracticePage() {
       };
       setResult(stats);
       setNext(null);
+      setShowTyped(false);
       save();
     },
     [session, tokens, save],
@@ -83,8 +86,113 @@ export default function PracticePage() {
   const goNext = useCallback(() => {
     setSession(next);
     setResult(null);
+    setShowTyped(false);
     setNext(null);
   }, [next]);
+
+  // Skip the words
+  const skipWords = useCallback(async () => {
+    if (!session || session.mode !== "words") return;
+
+    const { total, size } = session;
+    // start index of the very last chunk of words
+    const lastIndex = total <= size ? 0 : Math.floor((total - 1) / size) * size;
+
+    const skipPayload = {
+      mode: "words",
+      index: lastIndex,
+      wpm: 0,
+      accuracy: 0,
+      chars: 0,
+      wordCount: 0,
+      skip: true,
+      date: localISO(),
+    };
+
+    try {
+      const { data } = await api.post(
+        `/progress/${collectionId}/complete`,
+        skipPayload,
+      );
+      setSession(data);
+      setResult(null);
+      setNext(null);
+      setSaveError("");
+    } catch (e) {
+      toast.error(errMsg(e));
+    }
+  }, [session, collectionId]);
+
+  const handleBadgeClick = useCallback(() => {
+    if (result || !session || session.mode !== "words") return;
+
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-3">
+          <span className="text-sm font-medium">
+            Are you sure you want to skip the words and go to sentences?
+          </span>
+          <div className="flex justify-end gap-2">
+            <button
+              className="btn btn-sm btn-primary"
+              onClick={() => {
+                toast.dismiss(t.id);
+                skipWords();
+              }}
+            >
+              Yes, skip
+            </button>
+            <button className="btn btn-sm" onClick={() => toast.dismiss(t.id)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity },
+    );
+  }, [result, session, skipWords]);
+
+  // Shows what the user typed, coloured per character:
+  // green = correct, red = wrong or extra, grey = missed
+  // Same look as the typing test, read-only, showing everything the user typed
+  function TypedReview({ tokens, typed = [] }) {
+    return (
+      <div className="typing-area">
+        <div className="typing-inner">
+          {tokens.map((tok, i) => {
+            const target = tok.target;
+            const input = typed[i] ?? "";
+            const wrong = input !== target;
+            const len = Math.max(target.length, input.length);
+
+            return (
+              <div key={i} className={`tw ${wrong ? "tw-wrong" : ""}`}>
+                <span className="tl-letters">
+                  {Array.from({ length: len }, (_, j) => {
+                    const ch = j < target.length ? target[j] : input[j];
+                    let cls = "tl-untyped";
+                    if (j < input.length)
+                      cls =
+                        j >= target.length
+                          ? "tl-extra"
+                          : input[j] === target[j]
+                            ? "tl-correct"
+                            : "tl-wrong";
+                    return (
+                      <span key={j} className={cls}>
+                        {ch === " " ? "\u00A0" : ch}
+                      </span>
+                    );
+                  })}
+                </span>
+                {tok.hint && <span className="tl-hint">{tok.hint}</span>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -98,6 +206,7 @@ export default function PracticePage() {
       </div>
     );
   }
+
   if (!session) return <Spinner />;
 
   // ── whole collection finished ──
@@ -131,6 +240,7 @@ export default function PracticePage() {
   return (
     <div className="space-y-8">
       <header className="flex flex-wrap items-center justify-between gap-4">
+        <Toaster position="top-right" />
         {user.role === "admin" && (
           <div>
             <Link
@@ -148,11 +258,26 @@ export default function PracticePage() {
           <span className="badge badge-ghost">
             Set {set.position}/{collection.setsCount}
           </span>
-          <span
+          {/* <span
             className={`badge ${mode === "words" ? "badge-primary" : "badge-accent"}`}
           >
             {mode}
-          </span>
+          </span> */}
+          {mode === "words" && !result ? (
+            <button
+              type="button"
+              className="badge badge-primary cursor-pointer"
+              onClick={handleBadgeClick}
+            >
+              {mode}
+            </button>
+          ) : (
+            <span
+              className={`badge ${mode === "words" ? "badge-primary" : "badge-accent"}`}
+            >
+              {mode}
+            </span>
+          )}
           <span className="badge badge-ghost">
             {index + 1}–{to} of {total}
           </span>
@@ -184,6 +309,25 @@ export default function PracticePage() {
           />
         )}
       </section>
+
+      {result && (
+        <section className="bg-white rounded-xl shadow-sm p-6 sm:p-10 space-y-4">
+          <button
+            type="button"
+            className="btn btn-sm btn-ghost"
+            onClick={() => setShowTyped((v) => !v)}
+          >
+            <Icon name={showTyped ? "visibility_off" : "visibility"} />
+            {showTyped ? "Hide what I typed" : "Show what I typed"}
+          </button>
+
+          {showTyped && (
+            <div className="typing-review">
+              <TypedReview tokens={tokens} typed={result.typed} />
+            </div>
+          )}
+        </section>
+      )}
 
       {!result && mode === "words" && (
         <p className="text-sm text-base-content/60">

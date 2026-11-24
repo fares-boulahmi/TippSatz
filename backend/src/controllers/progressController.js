@@ -49,7 +49,31 @@ const num = (v, max) => Math.min(Math.max(Math.round(Number(v)) || 0, 0), max);
 export async function completeSession(req, res) {
   const collection = await findCollection(req.params.collectionId);
   const progress = await getOrCreateProgress(req.user._id, collection);
-  const { mode, index } = req.body;
+  const { mode, index, skip } = req.body;
+
+  // ─── SKIP: jump to the last words chunk so settle() flips to sentences ───
+  if (skip === true) {
+    // Only valid while the user is still in words mode
+    if (progress.completed || progress.mode !== "words" || mode !== "words") {
+      throw new HttpError(409, "Progress out of sync", {
+        session: await resolveSession(progress, collection),
+        collection: collection,
+        progress: progress,
+      });
+    }
+
+    // Compute the last chunk on the SERVER (don't trust the client's index)
+    const Set = await TypingSet.findById(progress.currentSet); // Calling the set To get the Actuall Number
+    const total = Set.words.length;
+    const size = CHUNK_SIZE.words;
+    const lastIndex = total <= size ? 0 : Math.floor((total - 1) / size) * size;
+
+    // Land on the last chunk, then advance by one chunk like a normal completion
+    progress.index = lastIndex + size;
+
+    // No Activity update: a skip is not a practice session
+    return res.json(await resolveSession(progress, collection));
+  }
 
   // Duplicate / stale submit (double click, second tab...) -> tell the client where it really is.
   if (

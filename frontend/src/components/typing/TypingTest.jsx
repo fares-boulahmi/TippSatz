@@ -68,7 +68,8 @@ export default function TypingTest({ tokens, onFinish }) {
   useEffect(() => {
     if (state.finishedAt && !reported.current) {
       reported.current = true;
-      onFinishRef.current(computeStats(state));
+      // onFinishRef.current(computeStats(state));
+      onFinishRef.current({ ...computeStats(state), typed: state.typed });
     }
   }, [state]);
 

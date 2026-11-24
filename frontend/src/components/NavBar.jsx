@@ -2,9 +2,9 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { errMsg } from "../api/client.js";
+import Logo from "../assets/TippSatz-Logo.png";
 import { useAuth } from "../context/AuthContext.jsx";
 import Icon from "./Icon.jsx";
-
 export default function Navbar() {
   const { user, logout, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
@@ -33,13 +33,14 @@ export default function Navbar() {
     <header className="fixed top-0 inset-x-0 z-40 bg-base-100/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(58,48,42,0.05)]">
       <div className="h-16 max-w-6xl mx-auto px-6 lg:px-10 flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 group">
-          <span className="font-headline font-semibold text-2xl group-hover:text-primary transition-colors">
+          <img src={Logo} alt="Logo" className="h-6 w-fit md:h-6 md:w-fit" />
+          <span className="font-headline font-semibold text-2xl group-hover:text-primary transition-colors max-sm:hidden">
             TippSatz
           </span>
-          <span className="font-headline italic text-primary text-xl"></span>
+          {/* <span className="font-headline italic text-primary text-xl"></span>
           <span className="hidden md:inline badge badge-ghost badge-sm uppercase tracking-wider">
             Custom typing sets
-          </span>
+          </span> */}
         </Link>
 
         <div className="flex items-center gap-2 ">

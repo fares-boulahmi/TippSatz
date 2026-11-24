@@ -148,3 +148,10 @@
     opacity: 0;
   }
 }
+
+/* Hide the preview of Typing  */
+.typing-review .typing-area {
+  height: auto;
+  overflow: visible;
+  user-select: text;
+}
