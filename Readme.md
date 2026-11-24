@@ -1,4 +1,4 @@
-# Tippwerk §
+# TippSatz
 
 A Monkeytype-style typing app for your **own** word and sentence sets. Write a collection, add sets of words (with translations) and sentences, then practise them in a fast typing test that remembers where you stopped.
 

@@ -1,8 +1,8 @@
-# Meet Tippwerk §
+# Meet TippSatz
 
 ## What is it?
 
-Tippwerk is a typing-practice app where **you** decide what gets typed. Instead of random text, you build collections of your own words and sentences, then practise them in a clean, fast typing test inspired by Monkeytype.
+TippSatz is a typing-practice app where **you** decide what gets typed. Instead of random text, you build collections of your own words and sentences, then practise them in a clean, fast typing test inspired by Monkeytype.
 
 ## Who is it for?
 
@@ -14,7 +14,7 @@ Tippwerk is a typing-practice app where **you** decide what gets typed. Instead 
 
 1. **Collection.** A topic, for example “Alltag A2” or “Bewerbung”.
 2. **Sets.** A collection is a chain of sets. Each set has words (`der Tisch | the table`) and sentences.
-3. **Sessions.** Tippwerk serves **15 words** at a time, then **3 sentences** at a time, then moves to the next set.
+3. **Sessions.** TippSatz serves **15 words** at a time, then **3 sentences** at a time, then moves to the next set.
 4. **Progress.** It remembers where you stopped, so you press _Continue_ and keep going.
 5. **Streaks.** Every session fills a day on a year-long contribution graph.
 

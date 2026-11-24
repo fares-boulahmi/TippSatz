@@ -34,9 +34,9 @@ export default function Navbar() {
       <div className="h-16 max-w-6xl mx-auto px-6 lg:px-10 flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 group">
           <span className="font-headline font-semibold text-2xl group-hover:text-primary transition-colors">
-            Tippwerk
+            TippSatz
           </span>
-          <span className="font-headline italic text-primary text-xl">§</span>
+          <span className="font-headline italic text-primary text-xl"></span>
           <span className="hidden md:inline badge badge-ghost badge-sm uppercase tracking-wider">
             Custom typing sets
           </span>

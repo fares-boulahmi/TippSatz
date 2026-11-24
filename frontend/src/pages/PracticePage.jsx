@@ -19,16 +19,15 @@ export default function PracticePage() {
   const payload = useRef(null);
   const { user } = useAuth();
   const id = useParams().id || null;
-  // if (id !== null) {
-  //   setCollectionId(id);
-  // }
 
   useEffect(() => {
     if (id !== null) {
-      setCollectionId(id);
       api
         .get(`/progress/${id}/session`)
-        .then((r) => setSession(r.data))
+        .then((r) => {
+          setCollectionId(id);
+          setSession(r.data);
+        })
         .catch((e) => setError(errMsg(e)));
     } else {
       api.get(`/progress/lastActivity`).then((r) => {

@@ -3,7 +3,7 @@
 
 /* Palette + radii taken from the Smart German design */
 @plugin "daisyui/theme" {
-  name: "tippwerk";
+  name: "tippSatz";
   default: true;
   prefersdark: false;
   color-scheme: light;

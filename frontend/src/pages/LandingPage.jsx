@@ -61,7 +61,7 @@ const STEPS = [
   },
   {
     title: "3. Practise",
-    text: "Hit Continue. Tippwerk serves the next chunk, saves your result, and moves the pointer for you.",
+    text: "Hit Continue. TippSatz serves the next chunk, saves your result, and moves the pointer for you.",
   },
 ];
 
@@ -213,7 +213,7 @@ export default function LandingPage() {
           </h1>
           <p className="text-xl font-light text-base-content/70 max-w-xl mt-6 mb-8">
             Write your own word lists and sentences, then practise them in a
-            fast, clean typing test. Tippwerk remembers where you stopped, set
+            fast, clean typing test. TippSatz remembers where you stopped, set
             by set.
           </p>
           <div className="flex flex-wrap gap-3">
@@ -334,7 +334,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="max-w-6xl mx-auto px-6 lg:px-10 py-8 text-sm text-base-content/60">
-        Tippwerk § · Custom typing sets for language learners.
+        TippSatz · Custom typing sets for language learners.
       </footer>
     </div>
   );
